@@ -1,8 +1,16 @@
-import React, { Component } from 'react';
-import './App.css';
+import React, { Component, Fragment } from 'react';
+import { Route, withRouter, Switch, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
+
+import Layout from './hoc/Layout/Layout';
+import Logout from './containers/Auth/Logout/Logout';
+import WelcomeScreen from './containers/WelcomeScreen/WelcomeScreen';
+import AuthScreen from './components/Auth/AuthScreen';
 import * as actionCreators from './store/actions/actionCreators';
-import Button from '@material-ui/core/Button';
+
+import CssBaseline from '@material-ui/core/CssBaseline';
+
+import './App.css';
 
 class App extends Component {
   componentDidMount() {
@@ -85,33 +93,33 @@ class App extends Component {
     this.props.dispatch(actionCreators.stopObservingAuthState());
   }
   render() {
+    const routes = this.props.isAuthenticated ? (
+      <Switch>
+        <Route path="/logout" component={Logout} />
+        <Redirect to="/" />
+      </Switch>
+    ) : (
+      <Switch>
+        <Route path="/login" component={AuthScreen} />
+        <Route path="/" component={WelcomeScreen} />
+        <Redirect to="/" />
+      </Switch>
+    );
+
     return (
-      <div className="App">
-        <Button variant="contained" onClick={this.signIn}>
-          Sign In
-        </Button>
-        <button onClick={this.signOut}>Sign Out</button>
-        <button onClick={this.stop}>Stop</button>
-        <button onClick={this.createList}>Create A List</button>
-        <button onClick={this.fetchLists}>Fetch Lists</button>
-        <button onClick={this.updateItems}>Update Items</button>
-        <button onClick={this.publishList}>Publish List</button>
-        <button onClick={this.unpublishList}>Unpublish List</button>
-        <button onClick={this.shareList}>share List</button>
-        <button onClick={this.assignOwnership}>assign ownership</button>
-        <button onClick={this.removeUser}>remove user</button>
-        <button onClick={this.deleteList}>delete list</button>
-        <button onClick={this.observeList}>observe list</button>
-        <button onClick={this.stopObserving}>stop observing</button>
-      </div>
+      <Fragment>
+        <CssBaseline />
+        <Layout isLoggedIn={this.props.isAuthenticated}>{routes}</Layout>
+      </Fragment>
     );
   }
 }
 
 const mapStateToProps = state => {
   return {
+    isAuthenticated: state.auth.userId !== null,
     activeListId: state.list.activeListId,
     activeList: state.list.activeList,
   };
 };
-export default connect(mapStateToProps)(App);
+export default withRouter(connect(mapStateToProps)(App));

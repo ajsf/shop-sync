@@ -2,10 +2,10 @@ import * as actionTypes from '../actions/actionTypes';
 import { updateObject } from '../../shared/utils';
 
 const initialState = {
-  token: null,
+  refreshToken: null,
   userId: null,
   error: null,
-  loading: false,
+  loading: true,
 };
 
 const authStart = (state, action) =>
@@ -13,7 +13,7 @@ const authStart = (state, action) =>
 
 const authSuccess = (state, action) =>
   updateObject(state, {
-    token: action.idToken,
+    refreshToken: action.refreshToken,
     userId: action.userId,
     error: null,
     loading: false,
@@ -23,7 +23,7 @@ const authError = (state, action) =>
   updateObject(state, { error: action.error, loading: false });
 
 const authLogout = (state, action) =>
-  updateObject(state, { token: null, userId: null });
+  updateObject(state, { token: null, userId: null, loading: false });
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {

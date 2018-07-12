@@ -2,7 +2,7 @@ import * as actionTypes from '../actions/actionTypes';
 import { updateObject } from '../../shared/utils';
 
 const initialState = {
-  processing: false,
+  processing: true,
   error: null,
 };
 

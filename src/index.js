@@ -7,7 +7,6 @@ import { composeWithDevTools } from 'redux-devtools-extension';
 import thunk from 'redux-thunk';
 import createSagaMiddleware from 'redux-saga';
 
-import './index.css';
 import App from './App';
 import registerServiceWorker from './registerServiceWorker';
 
@@ -15,6 +14,19 @@ import authReducer from './store/reducers/auth';
 import listReducer from './store/reducers/list';
 import networkReducer from './store/reducers/network';
 import rootSaga from './store/sagas';
+
+import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
+import purple from '@material-ui/core/colors/purple';
+import green from '@material-ui/core/colors/green';
+
+import './index.css';
+
+const theme = createMuiTheme({
+  palette: {
+    primary: purple,
+    secondary: green,
+  },
+});
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -32,11 +44,13 @@ const store = createStore(
 sagaMiddleware.run(rootSaga);
 
 const app = (
-  <Provider store={store}>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
-  </Provider>
+  <MuiThemeProvider theme={theme}>
+    <Provider store={store}>
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </Provider>
+  </MuiThemeProvider>
 );
 
 ReactDOM.render(app, document.getElementById('root'));

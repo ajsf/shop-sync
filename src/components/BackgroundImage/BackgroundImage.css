@@ -1,0 +1,6 @@
+.BackgroundImageClass{
+  background-image: url('../../assets/images/aubergines-bio-cabbage-5205.jpg');
+  height: 100%;
+  width: 100%;
+  background-size: cover;
+}
