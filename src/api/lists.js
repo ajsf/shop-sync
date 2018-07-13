@@ -25,7 +25,9 @@ export async function fetchListsForUser(userId) {
     .ref()
     .child(`/${LISTS_BY_UID_REF}/${userId}/`)
     .once('value');
-  return snapshot.val();
+  const response = snapshot.val();
+  console.log('Fetching', response);
+  return response;
 }
 
 export const updateListItems = (listId, listItems) => {
@@ -88,4 +90,12 @@ export const deleteList = (listId, userId) => {
     .database()
     .ref()
     .update(updates);
+};
+
+export const observeList = listId => {
+  return firebase.database().ref(LISTS_REF + '/' + listId);
+};
+
+export const observeListsForUser = userId => {
+  return firebase.database().ref(`/${LISTS_BY_UID_REF}/${userId}/`);
 };

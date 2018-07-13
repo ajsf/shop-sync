@@ -36,30 +36,4 @@ describe('lists sagas', () => {
       expect(next).toEqual(put(actionCreators.networkOperationFail(ERROR)));
     });
   });
-
-  describe('fetchListsForUserSaga', () => {
-    beforeEach(() => {
-      action = actionCreators.fetchListsForUser(userId);
-      saga = sagas.fetchListsForUserSaga(action);
-    });
-
-    it('calls fetchListsForUser function with userId passed in from action', () => {
-      saga.next();
-      const next = saga.next().value;
-      expect(next).toEqual(call(api.fetchListsForUser, action.userId));
-    });
-
-    it('puts a fetchListsSuccess action on success', () => {
-      saga.next();
-      saga.next();
-      const next = saga.next({}).value;
-      expect(next).toEqual(put(actionCreators.fetchListsSuccess({})));
-    });
-
-    it('puts a networkError action on error', () => {
-      saga.next();
-      const next = saga.throw(ERROR).value;
-      expect(next).toEqual(put(actionCreators.networkOperationFail(ERROR)));
-    });
-  });
 });

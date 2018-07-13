@@ -9,9 +9,9 @@ describe('list reducer', () => {
     initialState = reducer(undefined, {});
   });
 
-  it('should return the initial state', () => {
+  it('the initial state should have precessing set to true and error set to null', () => {
     expect(initialState).toEqual({
-      processing: false,
+      processing: true,
       error: null,
     });
   });

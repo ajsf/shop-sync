@@ -7,11 +7,11 @@ export const authStart = () => {
 };
 
 export const authSuccess = user => {
-  console.log(user);
   return {
     type: actionTypes.AUTH_SUCCESS,
     refreshToken: user.refreshToken,
     userId: user.uid,
+    userName: user.displayName,
   };
 };
 

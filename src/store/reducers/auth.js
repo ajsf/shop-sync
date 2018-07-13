@@ -4,6 +4,7 @@ import { updateObject } from '../../shared/utils';
 const initialState = {
   refreshToken: null,
   userId: null,
+  userName: null,
   error: null,
   loading: true,
 };
@@ -15,6 +16,7 @@ const authSuccess = (state, action) =>
   updateObject(state, {
     refreshToken: action.refreshToken,
     userId: action.userId,
+    userName: action.userName,
     error: null,
     loading: false,
   });
@@ -23,7 +25,12 @@ const authError = (state, action) =>
   updateObject(state, { error: action.error, loading: false });
 
 const authLogout = (state, action) =>
-  updateObject(state, { token: null, userId: null, loading: false });
+  updateObject(state, {
+    refreshToken: null,
+    userId: null,
+    userName: null,
+    loading: false,
+  });
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {

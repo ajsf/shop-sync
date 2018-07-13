@@ -13,10 +13,11 @@ describe('auth reducer', () => {
 
   it('should return the initial state', () => {
     expect(initialState).toEqual({
-      token: null,
+      refreshToken: null,
       userId: null,
+      userName: null,
       error: null,
-      loading: false,
+      loading: true,
     });
   });
 
@@ -41,9 +42,9 @@ describe('auth reducer', () => {
     const action = actionCreators.authSuccess(user);
 
     it('should store the userId', () => {
-      expect(initialState.token).toBeNull();
+      expect(initialState.userId).toBeNull();
       const reducedState = reducer(initialState, action);
-      expect(reducedState.token).toEqual(authToken);
+      expect(reducedState.userId).toEqual(uid);
     });
   });
 

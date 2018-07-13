@@ -45,13 +45,15 @@ const deleteListSuccess = (state, action) => updateObject(state, {});
 const onListUpdate = (state, action) =>
   updateObject(state, { activeList: action.list });
 
+const clearLists = (state, action) => updateObject(state, initialState);
+
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.CREATE_LIST_SUCCESS:
       return createListSuccess(state, action);
     case actionTypes.SAVE_LIST_SUCCESS:
       return saveListSuccess(state, action);
-    case actionTypes.FETCH_LISTS_SUCCESS:
+    case actionTypes.USER_LISTS_UPDATED:
       return fetchListsSuccess(state, action);
     case actionTypes.DELETE_LIST_SUCCESS:
       return deleteListSuccess(state, action);
@@ -63,6 +65,8 @@ const reducer = (state = initialState, action) => {
       return setEditUpdateMode(state, action);
     case actionTypes.SET_LIVE_UPDATE_MODE:
       return setLiveUpdateMode(state, action);
+    case actionTypes.CLEAR_LISTS:
+      return clearLists(state, action);
     default:
       return state;
   }

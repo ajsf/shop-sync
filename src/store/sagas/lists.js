@@ -1,27 +1,13 @@
-import firebase from '../../config/firebase';
 import * as actionCreators from '../actions/actionCreators/';
-import * as actionTypes from '../actions/actionTypes';
-import { put, takeEvery, call, take } from 'redux-saga/effects';
+import { put, call, take } from 'redux-saga/effects';
 import { eventChannel } from 'redux-saga';
 import * as api from '../../api/lists';
-import { LISTS_REF } from '../../config/firebase_consts';
 
 let listRef;
-let chan;
+let listChannel;
 
-export default function* watchLists() {
-  yield takeEvery(actionTypes.CREATE_LIST, createListSaga);
-  yield takeEvery(actionTypes.FETCH_LISTS_FOR_USER, fetchListsForUserSaga);
-  yield takeEvery(actionTypes.UPDATE_LIST_ITEMS, updateListItemsSaga);
-  yield takeEvery(actionTypes.PUBLISH_LIST, publishListSaga);
-  yield takeEvery(actionTypes.UNPUBLISH_LIST, unpublishListSaga);
-  yield takeEvery(actionTypes.SHARE_LIST, shareListSaga);
-  yield takeEvery(actionTypes.ASSIGN_LIST_OWNERSHIP, assignListOwnershipSaga);
-  yield takeEvery(actionTypes.REMOVE_USER_FROM_LIST, removeUserFromListSaga);
-  yield takeEvery(actionTypes.DELETE_LIST, deleteListSaga);
-  yield takeEvery(actionTypes.OBSERVE_LIST, observeListSaga);
-  yield takeEvery(actionTypes.STOP_OBSERVING_LIST, stopObservingListSaga);
-}
+let listsForUserRef;
+let listsForUserChannel;
 
 export function* createListSaga(action) {
   try {
@@ -35,18 +21,39 @@ export function* createListSaga(action) {
   }
 }
 
-export function* fetchListsForUserSaga(action) {
+function listsForUserEventChannel(userId) {
+  return eventChannel(emit => {
+    listsForUserRef = api.observeListsForUser(userId);
+    listsForUserRef.on('value', snapshot => {
+      emit({ lists: snapshot.val() });
+    });
+    return () => {
+      listsForUserRef.off();
+      listsForUserRef = null;
+    };
+  });
+}
+
+export function* observeListsForUserSaga(action) {
   try {
-    yield put(actionCreators.networkOperationStart());
-    const lists = yield call(api.fetchListsForUser, action.userId);
-    yield put(actionCreators.fetchListsSuccess(lists));
-    yield put(actionCreators.networkOperationSuccess());
+    listsForUserChannel = yield call(listsForUserEventChannel, action.userId);
+    while (true) {
+      const lists = yield take(listsForUserChannel);
+      yield put(actionCreators.userListsUpdated(lists.lists));
+    }
   } catch (error) {
+    console.log(error);
     yield put(actionCreators.networkOperationFail(error));
   }
 }
 
-function* updateListItemsSaga(action) {
+export function* stopObservingListsForUserSaga(action) {
+  if (listsForUserChannel) {
+    yield call(listsForUserChannel.close);
+  }
+}
+
+export function* updateListItemsSaga(action) {
   try {
     yield put(actionCreators.networkOperationStart());
     yield call(api.updateListItems, action.listId, action.listItems);
@@ -57,7 +64,7 @@ function* updateListItemsSaga(action) {
   }
 }
 
-function* publishListSaga(action) {
+export function* publishListSaga(action) {
   try {
     yield put(actionCreators.networkOperationStart());
     yield call(api.publishList, action.listId);
@@ -68,7 +75,7 @@ function* publishListSaga(action) {
   }
 }
 
-function* unpublishListSaga(action) {
+export function* unpublishListSaga(action) {
   try {
     yield put(actionCreators.networkOperationStart());
     yield call(api.unpublishList, action.listId);
@@ -78,7 +85,8 @@ function* unpublishListSaga(action) {
     yield put(actionCreators.networkOperationFail(error));
   }
 }
-function* shareListSaga(action) {
+
+export function* shareListSaga(action) {
   try {
     yield put(actionCreators.networkOperationStart());
     yield call(api.shareList, action.listId, action.userId, action.listSummary);
@@ -89,7 +97,7 @@ function* shareListSaga(action) {
   }
 }
 
-function* assignListOwnershipSaga(action) {
+export function* assignListOwnershipSaga(action) {
   try {
     yield put(actionCreators.networkOperationStart());
     yield call(
@@ -105,7 +113,7 @@ function* assignListOwnershipSaga(action) {
   }
 }
 
-function* removeUserFromListSaga(action) {
+export function* removeUserFromListSaga(action) {
   try {
     yield put(actionCreators.networkOperationStart());
     yield call(api.removeUserFromList, action.listId, action.userId);
@@ -116,7 +124,7 @@ function* removeUserFromListSaga(action) {
   }
 }
 
-function* deleteListSaga(action) {
+export function* deleteListSaga(action) {
   try {
     yield put(actionCreators.networkOperationStart());
     yield call(api.deleteList, action.listId, action.userId);
@@ -129,7 +137,7 @@ function* deleteListSaga(action) {
 
 function listEventChannel(listId) {
   return eventChannel(emit => {
-    listRef = firebase.database().ref(LISTS_REF + '/' + listId);
+    listRef = api.observeList(listId);
     listRef.on('value', snapshot => {
       emit({ list: snapshot.val() });
     });
@@ -140,13 +148,11 @@ function listEventChannel(listId) {
   });
 }
 
-function* observeListSaga(action) {
-  console.log('Observing list', listRef);
-
+export function* observeListSaga(action) {
   try {
-    chan = yield call(listEventChannel, action.listId);
+    listChannel = yield call(listEventChannel, action.listId);
     while (true) {
-      const list = yield take(chan);
+      const list = yield take(listChannel);
       yield put(actionCreators.onListUpdate(list));
     }
   } catch (error) {
@@ -154,7 +160,8 @@ function* observeListSaga(action) {
   }
 }
 
-function* stopObservingListSaga(action) {
-  yield listRef.off();
-  yield (listRef = null);
+export function* stopObservingListSaga(action) {
+  if (listChannel) {
+    yield call(listChannel.close);
+  }
 }

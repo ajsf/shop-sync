@@ -20,16 +20,22 @@ export const createListSuccess = (listId, list) => {
 };
 
 //read
-export const fetchListsForUser = userId => {
+export const observeListsForUser = userId => {
   return {
-    type: actionTypes.FETCH_LISTS_FOR_USER,
+    type: actionTypes.OBSERVE_LISTS_FOR_USER,
     userId,
   };
 };
 
-export const fetchListsSuccess = lists => {
+export const stopObservingListsForUser = () => {
   return {
-    type: actionTypes.FETCH_LISTS_SUCCESS,
+    type: actionTypes.STOP_OBSERVING_LISTS_FOR_USER,
+  };
+};
+
+export const userListsUpdated = lists => {
+  return {
+    type: actionTypes.USER_LISTS_UPDATED,
     lists,
   };
 };
@@ -142,4 +148,8 @@ export const setEditUpdateMode = () => {
 
 export const setLiveUpdateMode = () => {
   return { type: actionTypes.SET_LIVE_UPDATE_MODE };
+};
+
+export const clearLists = () => {
+  return { type: actionTypes.CLEAR_LISTS };
 };

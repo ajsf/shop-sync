@@ -1,23 +1,13 @@
 import firebase from '../../config/firebase';
 import * as actionCreators from '../actions/actionCreators/';
-import * as actionTypes from '../actions/actionTypes/auth';
-import { call, put, takeEvery, take } from 'redux-saga/effects';
+import { call, put, take } from 'redux-saga/effects';
 import { eventChannel } from 'redux-saga';
 
 let chan;
 
-export default function* watchAuth() {
-  yield takeEvery(actionTypes.AUTH_OBSERVE, observeAuthSaga);
-  yield takeEvery(actionTypes.AUTH_STOP_OBSERVING, stopObservingAuthSaga);
-  yield takeEvery(actionTypes.AUTH_CREATE_ACCOUNT, createAccountSaga);
-  yield takeEvery(actionTypes.AUTH_LOGIN, authLoginSaga);
-  yield takeEvery(actionTypes.AUTH_LOGOUT, authLogoutSaga);
-}
-
 function authEventChannel() {
   return eventChannel(emit => {
     const removeAuthListener = firebase.auth().onAuthStateChanged(user => {
-      console.log('Auth event', user);
       if (user) {
         emit(user);
       } else {
@@ -31,30 +21,29 @@ function authEventChannel() {
   });
 }
 
-function* observeAuthSaga(action) {
+export function* observeAuthSaga(action) {
   try {
     chan = yield call(authEventChannel);
     while (true) {
       const user = yield take(chan);
       if (user && user !== 'NO AUTH') {
-        console.log('Putting auth success', user);
         yield put(actionCreators.authSuccess(user));
+        yield put(actionCreators.observeListsForUser(user.uid));
       } else {
-        console.log('Putting onLogout');
         yield put(actionCreators.onLogout());
+        yield put(actionCreators.clearLists());
       }
     }
   } catch (error) {
-    console.log('error', error);
     yield put(actionCreators.networkOperationFail(error));
   }
 }
 
-function* stopObservingAuthSaga(action) {
-  yield chan.close();
+export function* stopObservingAuthSaga(action) {
+  yield call(chan.close());
 }
 
-function* createAccountSaga(action) {
+export function* createAccountSaga(action) {
   try {
     yield firebase.auth().setPersistence('local');
     yield firebase
@@ -65,7 +54,7 @@ function* createAccountSaga(action) {
   }
 }
 
-function* authLoginSaga(action) {
+export function* authLoginSaga(action) {
   try {
     yield firebase.auth().setPersistence('local');
     yield firebase
@@ -76,7 +65,6 @@ function* authLoginSaga(action) {
   }
 }
 
-function* authLogoutSaga(action) {
-  console.log('Logging out', action);
+export function* authLogoutSaga(action) {
   yield firebase.auth().signOut();
 }
