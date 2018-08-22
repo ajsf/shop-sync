@@ -25,7 +25,13 @@ function listsForUserEventChannel(userId) {
   return eventChannel(emit => {
     listsForUserRef = api.observeListsForUser(userId);
     listsForUserRef.on('value', snapshot => {
-      emit({ lists: snapshot.val() });
+      const lists = [];
+      snapshot.forEach(listSnapshot => {
+        const list = listSnapshot.val();
+        list['listId'] = listSnapshot.key;
+        lists.push(list);
+      });
+      emit({ lists: lists.reverse() });
     });
     return () => {
       listsForUserRef.off();
@@ -36,10 +42,16 @@ function listsForUserEventChannel(userId) {
 
 export function* observeListsForUserSaga(action) {
   try {
+    yield put(actionCreators.networkOperationStart('loading_lists'));
     listsForUserChannel = yield call(listsForUserEventChannel, action.userId);
+    let loading = true;
     while (true) {
-      const lists = yield take(listsForUserChannel);
-      yield put(actionCreators.userListsUpdated(lists.lists));
+      const data = yield take(listsForUserChannel);
+      yield put(actionCreators.userListsUpdated(data.lists));
+      if (loading) {
+        yield put(actionCreators.networkOperationSuccess());
+        loading = false;
+      }
     }
   } catch (error) {
     console.log(error);
@@ -53,10 +65,44 @@ export function* stopObservingListsForUserSaga(action) {
   }
 }
 
-export function* updateListItemsSaga(action) {
+export function* createListItemSaga(action) {
   try {
     yield put(actionCreators.networkOperationStart());
-    yield call(api.updateListItems, action.listId, action.listItems);
+    const { listId, item } = action;
+    yield call(api.createListItem, listId, item);
+    yield put(actionCreators.saveListSuccess(listId));
+    yield put(actionCreators.networkOperationSuccess());
+  } catch (error) {
+    yield put(actionCreators.networkOperationFail(error));
+  }
+}
+
+export function* updateListItemSaga(action) {
+  try {
+    yield put(actionCreators.networkOperationStart());
+    yield call(api.updateListItem, action.listId, action.itemId, action.item);
+    yield put(actionCreators.networkOperationSuccess());
+    yield put(actionCreators.saveListSuccess(action.listId));
+  } catch (error) {
+    yield put(actionCreators.networkOperationFail(error));
+  }
+}
+
+export function* deleteListItemSaga(action) {
+  try {
+    yield put(actionCreators.networkOperationStart());
+    yield call(api.deleteListItem, action.listId, action.itemId);
+    yield put(actionCreators.networkOperationSuccess());
+    yield put(actionCreators.saveListSuccess(action.listId));
+  } catch (error) {
+    yield put(actionCreators.networkOperationFail(error));
+  }
+}
+
+export function* setListTitleSaga(action) {
+  try {
+    yield put(actionCreators.networkOperationStart());
+    yield call(api.setListTitle, action.listId, action.title);
     yield put(actionCreators.networkOperationSuccess());
     yield put(actionCreators.saveListSuccess(action.listId));
   } catch (error) {
@@ -150,10 +196,21 @@ function listEventChannel(listId) {
 
 export function* observeListSaga(action) {
   try {
+    yield put(actionCreators.networkOperationStart('loading_active_list'));
+    if (listChannel) {
+      yield call(listChannel.close);
+      listChannel = null;
+    }
     listChannel = yield call(listEventChannel, action.listId);
+    yield put(actionCreators.setActiveListId(action.listId));
+    let loading = true;
     while (true) {
-      const list = yield take(listChannel);
-      yield put(actionCreators.onListUpdate(list));
+      const data = yield take(listChannel);
+      yield put(actionCreators.onListUpdate(data.list));
+      if (loading) {
+        yield put(actionCreators.networkOperationSuccess());
+        loading = false;
+      }
     }
   } catch (error) {
     yield put(actionCreators.networkOperationFail(error));
@@ -161,7 +218,9 @@ export function* observeListSaga(action) {
 }
 
 export function* stopObservingListSaga(action) {
+  yield put(actionCreators.setActiveListId(null));
   if (listChannel) {
     yield call(listChannel.close);
+    listChannel = null;
   }
 }

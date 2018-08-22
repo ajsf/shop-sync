@@ -14,7 +14,10 @@ function* watchAuth() {
 
 function* watchLists() {
   yield takeEvery(actionTypes.CREATE_LIST, lists.createListSaga);
-  yield takeEvery(actionTypes.UPDATE_LIST_ITEMS, lists.updateListItemsSaga);
+  yield takeEvery(actionTypes.CREATE_LIST_ITEM, lists.createListItemSaga);
+  yield takeEvery(actionTypes.UPDATE_LIST_ITEM, lists.updateListItemSaga);
+  yield takeEvery(actionTypes.DELETE_LIST_ITEM, lists.deleteListItemSaga);
+  yield takeEvery(actionTypes.SET_LIST_TITLE, lists.setListTitleSaga);
   yield takeEvery(actionTypes.PUBLISH_LIST, lists.publishListSaga);
   yield takeEvery(actionTypes.UNPUBLISH_LIST, lists.unpublishListSaga);
   yield takeEvery(actionTypes.SHARE_LIST, lists.shareListSaga);

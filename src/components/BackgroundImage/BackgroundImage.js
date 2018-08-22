@@ -3,7 +3,6 @@ import classes from './BackgroundImage.css';
 
 class BackgroundImage extends Component {
   componentDidMount() {
-    console.log(classes.BackgroundImageClass);
     document.body.classList.toggle(classes.BackgroundImageClass);
   }
 

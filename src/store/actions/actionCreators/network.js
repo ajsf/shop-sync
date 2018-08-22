@@ -1,7 +1,7 @@
 import * as actionTypes from '../actionTypes';
 
-export const networkOperationStart = () => {
-  return { type: actionTypes.NETWORK_OPERATION_START };
+export const networkOperationStart = operationName => {
+  return { type: actionTypes.NETWORK_OPERATION_START, name: operationName };
 };
 
 export const networkOperationFail = err => {

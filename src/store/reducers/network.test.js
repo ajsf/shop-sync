@@ -9,11 +9,9 @@ describe('list reducer', () => {
     initialState = reducer(undefined, {});
   });
 
-  it('the initial state should have precessing set to true and error set to null', () => {
-    expect(initialState).toEqual({
-      processing: true,
-      error: null,
-    });
+  it('the initial state should have precessing set to false and error set to null', () => {
+    expect(initialState.processing).toBeFalsy();
+    expect(initialState.error).toBeNull();
   });
 
   it('should set processing to true and error to null when starting a network operation', () => {

@@ -40,13 +40,13 @@ const Layout = props => {
     <div className={classes.root}>
       <AppBar position="fixed">
         <Toolbar>
-          <IconButton
+          {/* <IconButton
             className={classes.menuButton}
             color="inherit"
             aria-label="Menu"
           >
             <MenuIcon />
-          </IconButton>
+          </IconButton> */}
           <Typography className={classes.flex} variant="title" color="inherit">
             <ButtonBase component={Link} to="/">
               Sync Shopper

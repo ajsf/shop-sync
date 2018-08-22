@@ -40,6 +40,13 @@ export const userListsUpdated = lists => {
   };
 };
 
+export const setActiveListId = listId => {
+  return {
+    type: actionTypes.SET_ACTIVE_LIST_ID,
+    listId,
+  };
+};
+
 export const observeList = listId => {
   return {
     type: actionTypes.OBSERVE_LIST,
@@ -61,11 +68,45 @@ export const onListUpdate = list => {
 };
 
 //update
-export const updateListItems = (listId, listItems) => {
+
+export const createListItem = (listId, item) => {
   return {
-    type: actionTypes.UPDATE_LIST_ITEMS,
+    type: actionTypes.CREATE_LIST_ITEM,
     listId,
-    listItems,
+    item,
+  };
+};
+export const updateListItem = (listId, itemId, item) => {
+  console.log('UPDATE ACTION CREATOR', itemId);
+  return {
+    type: actionTypes.UPDATE_LIST_ITEM,
+    listId,
+    itemId,
+    item,
+  };
+};
+
+export const deleteListItem = (listId, itemId) => {
+  return {
+    type: actionTypes.DELETE_LIST_ITEM,
+    listId,
+    itemId,
+  };
+};
+
+export const selectListItem = itemId => {
+  return {
+    type: actionTypes.SELECT_LIST_ITEM,
+    itemId,
+  };
+};
+
+export const setListTitle = (listId, title) => {
+  console.log('SETTING TITLE', listId, title);
+  return {
+    type: actionTypes.SET_LIST_TITLE,
+    listId,
+    title,
   };
 };
 

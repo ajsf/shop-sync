@@ -19,23 +19,47 @@ export async function createList(list, summary) {
   return listKey;
 }
 
-export async function fetchListsForUser(userId) {
-  const snapshot = await firebase
-    .database()
-    .ref()
-    .child(`/${LISTS_BY_UID_REF}/${userId}/`)
-    .once('value');
-  const response = snapshot.val();
-  console.log('Fetching', response);
-  return response;
-}
-
-export const updateListItems = (listId, listItems) => {
-  return firebase
+export async function createListItem(listId, item) {
+  const itemId = await firebase
     .database()
     .ref()
     .child(`/${LISTS_REF}/${listId}/items/`)
-    .update(listItems);
+    .push().key;
+
+  const updates = {};
+  updates[`/${LISTS_REF}/${listId}/items/${itemId}`] = item;
+  await firebase
+    .database()
+    .ref()
+    .update(updates);
+  return itemId;
+}
+
+export const updateListItem = (listId, itemId, item) => {
+  console.log('UPDATING ITEM', item, itemId);
+  return firebase
+    .database()
+    .ref()
+    .child(`/${LISTS_REF}/${listId}/items/${itemId}`)
+    .update(item);
+};
+
+export const deleteListItem = (listId, itemId) => {
+  console.log('DELTING ITEM', listId, itemId);
+  const updates = {};
+  updates[`/${LISTS_REF}/${listId}/items/${itemId}`] = null;
+  return firebase
+    .database()
+    .ref()
+    .update(updates);
+};
+
+export const setListTitle = (listId, title) => {
+  return firebase
+    .database()
+    .ref()
+    .child(`/${LISTS_REF}/${listId}/title/`)
+    .set(title);
 };
 
 export const publishList = listId => {
@@ -97,5 +121,8 @@ export const observeList = listId => {
 };
 
 export const observeListsForUser = userId => {
-  return firebase.database().ref(`/${LISTS_BY_UID_REF}/${userId}/`);
+  return firebase
+    .database()
+    .ref(`/${LISTS_BY_UID_REF}/${userId}/`)
+    .orderByChild('modifiedDate');
 };

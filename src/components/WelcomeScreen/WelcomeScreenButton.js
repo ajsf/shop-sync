@@ -13,7 +13,7 @@ const WelcomeScreenButton = props => {
           to="/login"
           color="primary"
         >
-          Get Started!
+          Get Started
         </Button>
       </Grid>
     </Grid>

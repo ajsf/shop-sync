@@ -10,6 +10,7 @@ const initialState = {
   lists: [],
   activeListId: null,
   activeList: null,
+  activeListItemId: null,
   saved: true,
   updateMode: null,
 };
@@ -19,11 +20,13 @@ const createListSuccess = (state, action) =>
     saved: true,
     activeListId: action.listId,
     activeList: action.list,
+    activeListItemId: null,
   });
 
 const saveListSuccess = (state, action) =>
   updateObject(state, {
     saved: true,
+    activeListItemId: null,
   });
 
 const fetchListsSuccess = (state, action) =>
@@ -47,6 +50,12 @@ const onListUpdate = (state, action) =>
 
 const clearLists = (state, action) => updateObject(state, initialState);
 
+const setActiveListId = (state, action) =>
+  updateObject(state, { activeListId: action.listId, activeList: null });
+
+const selectListItem = (state, action) =>
+  updateObject(state, { activeListItemId: action.itemId });
+
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.CREATE_LIST_SUCCESS:
@@ -67,6 +76,10 @@ const reducer = (state = initialState, action) => {
       return setLiveUpdateMode(state, action);
     case actionTypes.CLEAR_LISTS:
       return clearLists(state, action);
+    case actionTypes.SET_ACTIVE_LIST_ID:
+      return setActiveListId(state, action);
+    case actionTypes.SELECT_LIST_ITEM:
+      return selectListItem(state, action);
     default:
       return state;
   }

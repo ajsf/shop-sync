@@ -2,15 +2,20 @@ import * as actionTypes from '../actions/actionTypes';
 import { updateObject } from '../../shared/utils';
 
 const initialState = {
-  processing: true,
+  processing: false,
   error: null,
+  operationName: null,
 };
 
 const networkOperationStart = (state, action) =>
-  updateObject(state, { processing: true, error: null });
+  updateObject(state, {
+    processing: true,
+    error: null,
+    operationName: action.name,
+  });
 
 const networkOperationSuccess = (state, action) =>
-  updateObject(state, { processing: false });
+  updateObject(state, { processing: false, operationName: null });
 
 const networkOperationFail = (state, action) =>
   updateObject(state, { processing: false, error: action.error });

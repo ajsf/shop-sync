@@ -24,11 +24,11 @@ const styles = theme => ({
   progress: { marginTop: 32, marginBottom: 32 },
 });
 
-const SplashScreen = props => {
+const WelcomeScreen = props => {
   const { classes } = props;
   const paperContent = props.networkActive ? (
     <Grid container justify="center">
-      <CircularProgress  size={60} className={classes.progress} />
+      <CircularProgress size={60} className={classes.progress} />
     </Grid>
   ) : (
     <Fragment>
@@ -49,8 +49,8 @@ const SplashScreen = props => {
   );
 };
 
-SplashScreen.propTypes = {
+WelcomeScreen.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(SplashScreen);
+export default withStyles(styles)(WelcomeScreen);
