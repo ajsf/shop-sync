@@ -1,7 +1,9 @@
 import MainScreenLayout from '../../components/MainScreen/MainScreenLayout';
+import MainScreenMobileLayout from '../../components/MainScreen/MainScreenMobileLayout';
+
 import { connect } from 'react-redux';
 import * as actionCreators from '../../store/actions/actionCreators';
-
+import Media from 'react-media';
 import React, { Component } from 'react';
 
 export class MainLayout extends Component {
@@ -11,18 +13,23 @@ export class MainLayout extends Component {
   }
 
   render() {
-    return <MainScreenLayout {...this.props} />;
+    return (
+      <Media query={{ maxWidth: 699 }}>
+        {matches =>
+          matches ? (
+            <MainScreenMobileLayout />
+          ) : (
+            <MainScreenLayout />
+          )
+        }
+      </Media>
+    );
   }
 }
 
 const mapStateToProps = state => {
   return {
-    ...state.list,
-    userName: state.auth.userName,
-    userId: state.auth.userId,
-    loadingActiveList: state.network.operationName === 'loading_active_list',
-    loadingLists: state.network.operationName === 'loading_lists',
-  };
+  }
 };
 
 const mapDispatchToProps = {
@@ -30,7 +37,6 @@ const mapDispatchToProps = {
     actionCreators.createList(title, userName, userId),
   stopObservingList: () => actionCreators.stopObservingList(),
   stopObservingListsForUser: () => actionCreators.stopObservingListsForUser(),
-  openList: listId => actionCreators.observeList(listId),
 };
 
 export default connect(

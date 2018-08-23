@@ -5,6 +5,7 @@ import CardContent from '@material-ui/core/CardContent';
 import ButtonBase from '@material-ui/core/ButtonBase';
 import Typography from '@material-ui/core/Typography';
 import moment from 'moment';
+import { Link } from 'react-router-dom';
 
 const styles = {};
 
@@ -13,9 +14,16 @@ const ListSummaryCard = props => {
   const modifiedDate = moment(list.modifiedDate).format(
     'MMM Do YYYY, h:mm:ss a',
   );
+  const link = `/list/${list.listId}`;
   return (
     <Card>
-      <ButtonBase onClick={() => props.openList(list.listId)}>
+      <ButtonBase
+        component={Link}
+        to={link}
+        onClick={() => {
+          props.openList(list.listId);
+        }}
+      >
         <CardContent>
           <Typography>{list.title}</Typography>
           <Typography>{list.createdBy}</Typography>

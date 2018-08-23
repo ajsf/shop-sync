@@ -2,11 +2,26 @@ import React, { Fragment } from 'react';
 import Typography from '@material-ui/core/Typography';
 import EmptyContentWrapper from '../EmptyContentWrapper';
 import ListSummaryCard from './ListSummaryCard';
+
 import withLoadingIndicator from '../../../hoc/withLoadingIndicator/withLoadingIndicator';
+import { withStyles } from '@material-ui/core/styles';
+
+const styles = theme => ({
+  container: {
+    padding: theme.spacing.unit,
+    textAlign: 'center',
+    color: theme.palette.text.secondary,
+    margin: theme.spacing.unit,
+    minHeight: 400,
+    height: '100%',
+  },
+});
 
 const ShoppingListsLayout = props => {
+  console.log('SL LAYOUT', props);
+
   let content;
-  const { lists } = props;
+  const { lists, classes } = props;
   if (lists && lists.length > 0) {
     const cards = Object.keys(props.lists).map(listId => {
       return (
@@ -37,7 +52,7 @@ const ShoppingListsLayout = props => {
       </EmptyContentWrapper>
     );
   }
-  return <div className={props.paperClass}>{content}</div>;
+  return <div className={classes.container}>{content}</div>;
 };
 
-export default withLoadingIndicator(ShoppingListsLayout);
+export default withStyles(styles)(withLoadingIndicator(ShoppingListsLayout));

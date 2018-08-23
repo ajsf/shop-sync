@@ -7,6 +7,18 @@ import withLoadingIndicator from '../../hoc/withLoadingIndicator/withLoadingIndi
 import ListEditor from '../../components/MainScreen/ListEditor/ListEditor';
 import { connect } from 'react-redux';
 import * as actionCreators from '../../store/actions/actionCreators';
+import { withStyles } from '@material-ui/core/styles';
+
+const styles = theme => ({
+  container: {
+    padding: theme.spacing.unit,
+    textAlign: 'center',
+    color: theme.palette.text.secondary,
+    margin: theme.spacing.unit,
+    minHeight: 400,
+    height: '100%',
+  },
+});
 
 class ListEditorContainer extends Component {
   onSubmit = item => {
@@ -23,7 +35,7 @@ class ListEditorContainer extends Component {
 
   render() {
     let content;
-    const { list } = this.props;
+    const { list, classes } = this.props;
     if (list) {
       content = <ListEditor {...this.props} />;
     } else {
@@ -38,7 +50,7 @@ class ListEditorContainer extends Component {
 
     return (
       <Paper
-        className={this.props.paperClass}
+        className={classes.container}
         style={{
           display: 'flex',
           flexDirection: 'column',
@@ -56,10 +68,13 @@ const mapStateToProps = state => {
     listId: state.list.activeListId,
     list: state.list.activeList,
     activeItemId: state.list.activeListItemId,
+    processing: state.network.operationName === 'loading_active_list',
   };
 };
 
 const mapDispatchToProps = {
+  createList: (title, userName, userId) =>
+    actionCreators.createList(title, userName, userId),
   createListItem: (listId, item) => actionCreators.createListItem(listId, item),
   updateListItem: (listId, listItemId, item) =>
     actionCreators.updateListItem(listId, listItemId, item),
@@ -73,5 +88,5 @@ export default withLoadingIndicator(
   connect(
     mapStateToProps,
     mapDispatchToProps,
-  )(ListEditorContainer),
+  )(withStyles(styles)(ListEditorContainer)),
 );
