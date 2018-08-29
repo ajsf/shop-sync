@@ -13,6 +13,7 @@ describe('list reducer', () => {
     expect(initialState).toEqual({
       lists: [],
       activeListId: null,
+      activeListItemId: null,
       activeList: null,
       saved: true,
       updateMode: null,
