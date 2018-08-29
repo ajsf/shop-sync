@@ -12,6 +12,7 @@ const ItemsComponent = props => {
             item={props.items[itemId]}
             selectItem={() => props.selectItem(itemId)}
             deleteItem={() => props.deleteItem(itemId)}
+            selected={props.activeItemId === itemId}
           />
         );
       })

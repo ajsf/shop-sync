@@ -11,6 +11,9 @@ const styles = {
   root: {
     flex: 1,
   },
+  selected: {
+    backgroundColor: 'lightgrey',
+  },
 };
 
 const ListItemComponent = props => {
@@ -24,9 +27,11 @@ const ListItemComponent = props => {
     text = `${itemQuantityUnit} ${itemName}`;
   }
 
+  const selectedStyle = props.selected ? classes.selected : null;
+
   return (
     <Card>
-      <div style={{ display: 'flex' }}>
+      <div style={{ display: 'flex' }} className={selectedStyle}>
         <Checkbox />
         <ButtonBase onClick={props.selectItem} classes={{ root: classes.root }}>
           <Typography align="center">{text}</Typography>

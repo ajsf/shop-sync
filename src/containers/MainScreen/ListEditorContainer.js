@@ -16,6 +16,7 @@ const styles = theme => ({
     color: theme.palette.text.secondary,
     margin: theme.spacing.unit,
     minHeight: 400,
+    minWidth: 320,
     height: '100%',
   },
 });

@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import Typography from '@material-ui/core/Typography';
 import ButtonBase from '@material-ui/core/ButtonBase';
+import ShareIcon from '@material-ui/icons/Share';
+import IconButton from '@material-ui/core/IconButton';
 
 import TitleInputControls from './TitleInputControls';
 
@@ -36,16 +38,17 @@ class TitleComponent extends Component {
       ) : (
         <ButtonBase
           onClick={() => this.props.setTitleEditMode(true)}
-          style={{ width: '75%' }}
+          style={{ width: '90%' }}
         >
           <Typography variant="title">{this.props.title}</Typography>
         </ButtonBase>
       );
     return (
-      <div
-        style={{ display: 'flex', marginBottom: 16, justifyContent: 'center' }}
-      >
+      <div style={{ display: 'flex', marginBottom: 16 }}>
         {titleField}
+        <IconButton style={{ marginLeft: 'auto', alignSelf: 'center' }}>
+          <ShareIcon />
+        </IconButton>
       </div>
     );
   }

@@ -48,11 +48,13 @@ class ListEditor extends Component {
           deleteItem={itemId =>
             this.props.deleteListItem(this.props.listId, itemId)
           }
+          activeItemId={activeItemId}
         />
         <ListItemInputControls
           key={this.props.activeItemId}
           activeItem={activeItem}
           onSubmit={this.onSubmit}
+          onCancel={() => this.props.selectItem()}
         />
       </Fragment>
     );

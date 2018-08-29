@@ -7,14 +7,24 @@ const quantityUnits = ['g', 'Kg', 'Oz', 'Lb', 'Can'];
 
 class ListItemInputControls extends Component {
   constructor(props) {
-    console.log('INPUT CONTROLS', props);
     super(props);
-    if (props.activeItem) {
-      this.state = { ...props.activeItem };
+    if (this.props.activeItem) {
+      this.state = { ...this.props.activeItem };
     } else {
       this.state = { itemName: '', itemQuantity: '', itemQuantityUnit: '' };
     }
   }
+
+  setInitialState = () => {
+    console.log('Reseting state', this.state);
+    if (this.props.activeItem) {
+      this.setState({ ...this.props.activeItem });
+      console.log('Active item', this.props.activeItem);
+    } else {
+      this.setState({ itemName: '', itemQuantity: '', itemQuantityUnit: '' });
+      console.log('No active item');
+    }
+  };
 
   handleChange = key => event => {
     this.setState({
@@ -23,6 +33,8 @@ class ListItemInputControls extends Component {
   };
 
   render() {
+    console.log('Rendering ListItemInputControls', this.state);
+    const submitText = this.props.activeItem ? 'UPDATE' : 'ADD ITEM';
     return (
       <Fragment>
         <div style={{ display: 'flex', flexWrap: 'wrap' }}>
@@ -69,16 +81,28 @@ class ListItemInputControls extends Component {
         <div
           style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 16 }}
         >
-          <Button variant="contained">Reset</Button>
-          <Button variant="contained" color="secondary">
+          <Button
+            style={{ marginLeft: 8 }}
+            variant="contained"
+            onClick={this.setInitialState}
+          >
+            Reset
+          </Button>
+          <Button
+            style={{ marginLeft: 8 }}
+            onClick={this.props.onCancel}
+            variant="contained"
+            color="secondary"
+          >
             Cancel
           </Button>
           <Button
+            style={{ marginLeft: 8 }}
             onClick={() => this.props.onSubmit({ ...this.state })}
             variant="contained"
             color="primary"
           >
-            Submit
+            {submitText}
           </Button>
         </div>
       </Fragment>
