@@ -43,28 +43,6 @@ export function* stopObservingAuthSaga(action) {
   yield call(chan.close());
 }
 
-export function* createAccountSaga(action) {
-  try {
-    yield firebase.auth().setPersistence('local');
-    yield firebase
-      .auth()
-      .createUserWithEmailAndPassword(action.email, action.password);
-  } catch (error) {
-    yield put(actionCreators.authFail(error));
-  }
-}
-
-export function* authLoginSaga(action) {
-  try {
-    yield firebase.auth().setPersistence('local');
-    yield firebase
-      .auth()
-      .signInWithEmailAndPassword(action.email, action.password);
-  } catch (error) {
-    yield put(actionCreators.authFail(error));
-  }
-}
-
 export function* authLogoutSaga(action) {
   yield firebase.auth().signOut();
 }

@@ -7,8 +7,6 @@ import * as lists from './lists';
 function* watchAuth() {
   yield takeEvery(actionTypes.AUTH_OBSERVE, auth.observeAuthSaga);
   yield takeEvery(actionTypes.AUTH_STOP_OBSERVING, auth.stopObservingAuthSaga);
-  yield takeEvery(actionTypes.AUTH_CREATE_ACCOUNT, auth.createAccountSaga);
-  yield takeEvery(actionTypes.AUTH_LOGIN, auth.authLoginSaga);
   yield takeEvery(actionTypes.AUTH_LOGOUT, auth.authLogoutSaga);
 }
 

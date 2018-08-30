@@ -34,22 +34,6 @@ export const stopObservingAuthState = () => {
   };
 };
 
-export const createAccount = (email, password) => {
-  return {
-    type: actionTypes.AUTH_CREATE_ACCOUNT,
-    email,
-    password,
-  };
-};
-
-export const authLogin = (email, password) => {
-  return {
-    type: actionTypes.AUTH_LOGIN,
-    email,
-    password,
-  };
-};
-
 export const authLogout = () => {
   return {
     type: actionTypes.AUTH_LOGOUT,

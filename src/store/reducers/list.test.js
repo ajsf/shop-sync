@@ -1,6 +1,6 @@
 import reducer, { updateModes } from './list';
 import * as actionCreators from '../actions/actionCreators/lists';
-import { updateObject, createNewList } from '../../shared/utils';
+import { updateObject } from '../../shared/utils';
 
 describe('list reducer', () => {
   let initialState;
