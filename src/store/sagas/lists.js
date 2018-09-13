@@ -17,7 +17,7 @@ export function* createListSaga(action) {
     yield put(actionCreators.createListSuccess(listKey, action.list));
     yield put(actionCreators.networkOperationSuccess());
   } catch (error) {
-    yield put(actionCreators.networkOperationFail(error));
+    yield put(actionCreators.networkOperationFail(error.message));
   }
 }
 

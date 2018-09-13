@@ -16,11 +16,7 @@ export class MainLayout extends Component {
     return (
       <Media query={{ maxWidth: 699 }}>
         {matches =>
-          matches ? (
-            <MainScreenMobileLayout />
-          ) : (
-            <MainScreenLayout />
-          )
+          matches ? <MainScreenMobileLayout /> : <MainScreenLayout />
         }
       </Media>
     );
@@ -28,8 +24,7 @@ export class MainLayout extends Component {
 }
 
 const mapStateToProps = state => {
-  return {
-  }
+  return {};
 };
 
 const mapDispatchToProps = {

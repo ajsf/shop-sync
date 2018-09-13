@@ -1,5 +1,6 @@
 import React, { Fragment } from 'react';
 import Typography from '@material-ui/core/Typography';
+
 import EmptyContentWrapper from '../EmptyContentWrapper';
 import ListSummaryCard from './ListSummaryCard';
 

@@ -1,23 +1,24 @@
+import React from 'react';
 import { connect } from 'react-redux';
+
 import * as actionCreators from '../../store/actions/actionCreators';
-import React, { Component } from 'react';
 import ShoppingListsLayout from '../../components/MainScreen/ShoppingLists/ShoppingListsLayout';
 
-export class ShoppingListsContainer extends Component {
+const ShoppingListsContainer = props => {
+  const createList = () => {
+    props.createList('', props.userName, props.userId);
+  };
 
-  render() {
-    console.log('SL CONTAINER', this.props);
-    return (
-      <ShoppingListsLayout
-        openList={this.props.openList}
-        createList={this.props.createList}
-        lists={this.props.lists}
-        processing={this.props.loadingLists}
-        paperClass={this.props.paperClass}
-      />
-    );
-  }
-}
+  return (
+    <ShoppingListsLayout
+      openList={props.openList}
+      createList={createList}
+      lists={props.lists}
+      processing={props.loadingLists}
+      paperClass={props.paperClass}
+    />
+  );
+};
 
 const mapStateToProps = state => {
   return {
@@ -29,8 +30,8 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = {
-  stopObservingList: () => actionCreators.stopObservingList(),
-  stopObservingListsForUser: () => actionCreators.stopObservingListsForUser(),
+  createList: (title, userName, userId) =>
+    actionCreators.createList(title, userName, userId),
   openList: listId => actionCreators.observeList(listId),
 };
 
